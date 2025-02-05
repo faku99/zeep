@@ -1,0 +1,21 @@
+{
+  "name": "zeep",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A simple notes web application using Zig in the backend.",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "faku99",
+  "license": "ISC",
+  "devDependencies": {
+    "snowpack": "^3.8.8"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
