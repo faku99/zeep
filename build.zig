@@ -9,10 +9,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
     });
 
-    const sqlite = b.dependency("sqlite", .{
-        .optimize = optimize,
-        .target = target,
-    });
+    const sqlite = b.dependency("sqlite", .{});
 
     const zap = b.dependency("zap", .{
         .openssl = false,

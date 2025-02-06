@@ -32,8 +32,8 @@
             .hash = "12201347c20e8c4cb161f16bba30e51da17c32b89ef887b9b8932d6ed135ee5a6d01",
         },
         .sqlite = .{
-            .url = "git+https://github.com/vrischmann/zig-sqlite?ref=zig-0.13.0#7f4be7d30b126affb66b390c7825addb1c3506bd",
-            .hash = "1220940ae067451e7e6824e9b92baceac93b0bd6fa9ffd315179cc9a7ce5430a46ac",
+            .url = "git+https://github.com/nDimensional/zig-sqlite?ref=v0.1.0-3480000#a9e7f251a88d2b92e9278bcdcbdc5bf5c0c9b335",
+            .hash = "1220138fce3195c02011c7e0a869f3b2d297525079fa5228579b1da7200258e9467f",
         },
     },
     .paths = .{
