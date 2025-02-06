@@ -1,9 +1,10 @@
 const std = @import("std");
 const zap = @import("zap");
 
-const ApiEndpoint = @import("api.zig").ApiEndpoint;
 const Config = @import("config.zig").Config;
-const Database = @import("database.zig").Database;
+const Database = @import("database.zig");
+
+const ApiTodoEndpoint = @import("api/todo.zig");
 
 fn onRequest(req: zap.Request) void {
     // Disable caching
@@ -16,7 +17,9 @@ fn onRequest(req: zap.Request) void {
 }
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.GeneralPurposeAllocator(.{
+        .thread_safe = true,
+    }){};
     defer switch (gpa.deinit()) {
         .leak => @panic("Memory leak!"),
         .ok => {},
@@ -27,8 +30,11 @@ pub fn main() !void {
     // Load configuration
     var config = try Config.init(allocator);
     defer config.deinit();
-
     std.debug.print("{s}", .{config});
+
+    // Instanciate database
+    var db = try Database.init();
+    defer db.deinit();
 
     var listener = zap.Endpoint.Listener.init(allocator, .{
         .port = config.port,
@@ -38,18 +44,12 @@ pub fn main() !void {
     });
     defer listener.deinit();
 
-    var api_endpoint = ApiEndpoint.init("/api");
-    try listener.register(api_endpoint.endpoint());
+    var api_todo_ep = ApiTodoEndpoint.init(allocator, "/api/todo", &db);
+    try listener.register(api_todo_ep.getEndpoint());
 
     try listener.listen();
 
     std.debug.print("Listening on http://0.0.0.0:{d}\n", .{config.port});
-
-    var db = try Database.init();
-    defer db.deinit();
-
-    const todo_list = try db.fetchTodos(allocator);
-    std.debug.print("todo_list: {any}\n", .{todo_list});
 
     zap.start(.{
         .threads = 2,

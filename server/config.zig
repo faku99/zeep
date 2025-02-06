@@ -17,7 +17,10 @@ pub const Config = struct {
     const Self = @This();
 
     pub fn init(allocator: std.mem.Allocator) !Self {
-        try dotenv.load(allocator, .{});
+        dotenv.load(allocator, .{}) catch |e| switch (e) {
+            std.fs.File.OpenError.FileNotFound => std.log.warn("No .env file found. Using defaults\n", .{}),
+            else => return e,
+        };
 
         var env_vars = try std.process.getEnvMap(allocator);
         defer env_vars.deinit();
