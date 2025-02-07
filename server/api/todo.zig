@@ -2,6 +2,7 @@ const std = @import("std");
 const zap = @import("zap");
 
 const Database = @import("../database.zig");
+const utils = @import("../utils.zig");
 
 const Self = @This();
 
@@ -24,12 +25,28 @@ pub fn getEndpoint(self: *Self) *zap.Endpoint {
     return &self._endpoint;
 }
 
+fn getList(self: *Self, request: zap.Request) !void {
+    const todo_list = try self._database.listTodo(self._allocator);
+    defer self._allocator.free(todo_list);
+
+    const json = try std.json.stringifyAlloc(self._allocator, todo_list, .{});
+    defer self._allocator.free(json);
+
+    try request.sendJson(json);
+}
+
 fn get(endpoint: *zap.Endpoint, request: zap.Request) void {
-    _ = endpoint;
+    const self: *Self = @fieldParentPtr("_endpoint", endpoint);
 
     if (request.path) |path| {
-        std.log.debug("path: {s}", .{path});
+        const relative_path = std.fs.path.relative(self._allocator, self._endpoint.settings.path, path) catch |e| return utils.return500(@src(), request, e);
+        defer self._allocator.free(relative_path);
+
+        // TODO: Use routes map instead of 'if' chain
+        if (std.mem.eql(u8, relative_path, "")) {
+            self.getList(request) catch |e| return utils.return500(@src(), request, e);
+        }
     }
 
-    // TODO: Return todo's list from database
+    return utils.return404(request);
 }
