@@ -33,24 +33,3 @@ fn populate(self: *Self) !void {
 }
 
 pub const listTodo = @import("database/todo.zig").list;
-
-// pub fn fetchTodos(self: *Self, allocator: std.mem.Allocator) ![]Todo {
-//     var todos = std.ArrayList(Todo).init(allocator);
-
-//     const query = try self._db.prepare(
-//         struct {},
-//         Todo,
-//         "SELECT * FROM todo",
-//     );
-//     defer query.finalize();
-
-//     // try query.bind(.{});
-//     // defer query.reset();
-
-//     while (try query.step()) |todo| {
-//         std.log.info("id: {s}, title: '{s}'", .{ todo.id.data, todo.title.data });
-//         try todos.append(todo);
-//     }
-
-//     return todos.toOwnedSlice();
-// }
