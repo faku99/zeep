@@ -17,6 +17,7 @@ pub fn init(allocator: std.mem.Allocator, path: []const u8, database: *Database)
         ._endpoint = zap.Endpoint.init(.{
             .path = path,
             .get = get,
+            .post = post,
         }),
     };
 }
@@ -49,4 +50,22 @@ fn get(endpoint: *zap.Endpoint, request: zap.Request) void {
     }
 
     return utils.return404(request);
+}
+
+// TODO: Move elsewhere?
+const CreateTodo = struct {
+    title: []const u8,
+};
+
+fn post(endpoint: *zap.Endpoint, request: zap.Request) void {
+    const self: *Self = @fieldParentPtr("_endpoint", endpoint);
+
+    if (request.body) |body| {
+        const todo = std.json.parseFromSlice(CreateTodo, self._allocator, body, .{}) catch |e| return utils.return500(@src(), request, e);
+
+        std.log.debug("CREATE - title: {s}", .{todo.value.title});
+    }
+
+    // No body, return error
+    return utils.return400(request);
 }

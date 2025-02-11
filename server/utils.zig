@@ -1,6 +1,11 @@
 const std = @import("std");
 const zap = @import("zap");
 
+pub fn return400(request: zap.Request) void {
+    request.setStatus(zap.StatusCode.bad_request);
+    request.sendBody("Bad Request") catch return;
+}
+
 pub fn return404(request: zap.Request) void {
     request.setStatus(zap.StatusCode.not_found);
     request.sendBody("Not Found") catch return;
