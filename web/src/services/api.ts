@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/api/';
+const BASE_URL = "http://localhost:3000/api/";
 
 export interface ApiResponse<T> {
   data: T;
@@ -16,7 +16,7 @@ export class ApiService {
     endpoint: string,
     method: string,
     config?: RequestConfig,
-    body?: unknown
+    body?: unknown,
   ): Promise<ApiResponse<T>> {
     try {
       const url = new URL(endpoint, BASE_URL);
@@ -30,7 +30,7 @@ export class ApiService {
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...config?.headers,
         },
         body: body ? JSON.stringify(body) : undefined,
@@ -45,25 +45,25 @@ export class ApiService {
     } catch (error) {
       return {
         data: {} as T,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : "Unknown error occurred",
         status: 500,
       };
     }
   }
 
   static async get<T>(endpoint: string, config?: RequestConfig): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, 'GET', config);
+    return this.request<T>(endpoint, "GET", config);
   }
 
   static async post<T>(endpoint: string, body: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, 'POST', config, body);
+    return this.request<T>(endpoint, "POST", config, body);
   }
 
   static async put<T>(endpoint: string, body: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, 'PUT', config, body);
+    return this.request<T>(endpoint, "PUT", config, body);
   }
 
   static async delete<T>(endpoint: string, config?: RequestConfig): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, 'DELETE', config);
+    return this.request<T>(endpoint, "DELETE", config);
   }
 }
